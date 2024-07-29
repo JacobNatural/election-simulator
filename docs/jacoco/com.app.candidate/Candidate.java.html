@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Candidate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElectionSimulator</a> &gt; <a href="index.source.html" class="el_package">com.app.candidate</a> &gt; <span class="el_source">Candidate.java</span></div><h1>Candidate.java</h1><pre class="source lang-java linenums">package com.app.candidate;
+
+import com.app.electoral_district.ElectoralDistrict;
+import lombok.*;
+
+/**
+ * Represents a candidate with information about their votes and electoral district.
+ */
+@Builder
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Candidate {
+
+    /** The unique identifier of the candidate. */
+    final long id;
+
+    /** The first name of the candidate. */
+    final String name;
+
+    /** The surname of the candidate. */
+    final String surname;
+
+    /** The number of votes the candidate has received. By default, it is 0. */
+    @Builder.Default
+    int numberOfVotes = 0;
+
+    /** The electoral district to which the candidate is allocated. */
+    final ElectoralDistrict electoralDistrict;
+
+    /**
+     * Constructor for the Candidate class.
+     *
+     * @param id - Unique identifier of the candidate.
+     * @param name - the first name of the candidate.
+     * @param surname - the surname of the candidate.
+     * @param electoralDistrict - the district in which the candidate is running.
+     * @param validator - validator to validate the candidate object.
+     * @return candidate - The created and validated candidate object.
+     */
+    public static Candidate of(
+            long id, String name, String surname,
+            ElectoralDistrict electoralDistrict, Validator&lt;Candidate&gt; validator){
+
+        var candidate = Candidate
+<span class="fc" id="L46">                .builder()</span>
+<span class="fc" id="L47">                .id(id)</span>
+<span class="fc" id="L48">                .name(name)</span>
+<span class="fc" id="L49">                .surname(surname)</span>
+<span class="fc" id="L50">                .electoralDistrict(electoralDistrict)</span>
+<span class="fc" id="L51">                .build();</span>
+
+<span class="fc" id="L53">        Validator.validate(candidate, validator);</span>
+<span class="fc" id="L54">        return candidate;</span>
+    }
+
+    /**
+     * Checks if the candidate is from the specified electoral district.
+     *
+     * @param electoralDistrict - the district to check
+     * @return boolean - Returns true if the candidate is from the specified district, false otherwise.
+     */
+    public boolean hasElectoralDistrict(ElectoralDistrict electoralDistrict) {
+<span class="fc" id="L64">        return this.electoralDistrict.equals(electoralDistrict);</span>
+    }
+
+    /**
+     * Increments the vote count for the candidate by one.
+     */
+    public void addVote() {
+<span class="fc" id="L71">        numberOfVotes++;</span>
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * Resets the candidate's votes to zero. Typically used before a new round of voting.
+     */
+    public void resetVotesBeforeNextRound(){
+<span class="fc" id="L78">        numberOfVotes = 0;</span>
+<span class="fc" id="L79">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Voter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElectionSimulator</a> &gt; <a href="index.source.html" class="el_package">com.app.voter</a> &gt; <span class="el_source">Voter.java</span></div><h1>Voter.java</h1><pre class="source lang-java linenums">package com.app.voter;
+
+import com.app.candidate.Candidate;
+import com.app.electoral_district.ElectoralDistrict;
+import lombok.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Class representing the voter in an election.
+ */
+@Builder
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Voter {
+
+    // unique identifier for the voter
+    private final long id;
+
+    // electoral district to which the voter belongs
+    private final ElectoralDistrict electoralDistrict;
+
+    // set of candidates that the voter can vote for
+    final Set&lt;Candidate&gt; candidates;
+
+    /**
+     * Method to create a new Voter.
+     *
+     * @param id unique identifier for the voter
+     * @param electoralDistrict electoral district to which the voter belongs
+     * @param comparator comparator to sort the candidates
+     * @return Voter object
+     */
+    public static Voter of(
+            long id, ElectoralDistrict electoralDistrict,
+            Comparator&lt;Candidate&gt; comparator){
+
+        // Throw exceptions if electoralDistrict, comparator is null or id is less than 1
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if(electoralDistrict == null){</span>
+<span class="fc" id="L42">                throw new IllegalArgumentException(&quot;ElectoralDistrict cannot be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if(comparator == null){</span>
+<span class="fc" id="L46">            throw new IllegalArgumentException(&quot;Comparator cannot be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if(id &lt; 1){</span>
+<span class="fc" id="L50">            throw new IllegalArgumentException(&quot;Id cannot be less than 1&quot;);</span>
+        }
+
+        // Create a set of candidates
+<span class="fc" id="L54">        Set&lt;Candidate&gt; candidates = new TreeSet&lt;&gt;(comparator);</span>
+
+        // Return a new Voter object with provided parameters
+<span class="fc" id="L57">        return new Voter(id, electoralDistrict, candidates);</span>
+    }
+
+    /**
+     * Method to assign candidates to the voter based on electoral district
+     *
+     * @param candidateSet set of candidates
+     */
+    public void fillCandidateDependOnDistrict(Set&lt;Candidate&gt; candidateSet) {
+<span class="fc" id="L66">        this.candidates</span>
+<span class="fc" id="L67">                .addAll(candidateSet</span>
+<span class="fc" id="L68">                        .stream()</span>
+<span class="fc" id="L69">                        .filter(candidate -&gt; candidate.hasElectoralDistrict(electoralDistrict))</span>
+<span class="fc" id="L70">                        .collect(Collectors.toSet()));</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Method to assign candidates to the voter without considering electoral district
+     *
+     * @param candidateSet set of candidates
+     */
+    public void fillCandidateNotDependOnDistrict(Set&lt;Candidate&gt; candidateSet){
+<span class="fc" id="L79">        this.candidates.clear();</span>
+<span class="fc" id="L80">        this.candidates.addAll(candidateSet);</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Randomly select a candidate from the set and add a vote
+     */
+    public void choseRandom(){
+<span class="fc" id="L87">        candidates.stream().toList().get(generateRandom(0, candidates.size())).addVote();</span>
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * Method to generate a random number within a specified range
+     *
+     * @param min minimum range
+     * @param max maximum range
+     * @return int randomly generated number in the range
+     */
+    private int generateRandom(int min, int max){
+<span class="fc" id="L98">        return new Random().nextInt(min, max);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

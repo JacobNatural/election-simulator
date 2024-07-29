@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DataGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ElectionSimulator</a> &gt; <a href="index.source.html" class="el_package">com.app.data_generators</a> &gt; <span class="el_source">DataGenerator.java</span></div><h1>DataGenerator.java</h1><pre class="source lang-java linenums">package com.app.data_generators;
+
+import com.app.candidate.Candidate;
+import com.app.candidate.CandidateComparators;
+import com.app.electoral_district.ElectoralDistrict;
+import com.app.voter.Voter;
+
+import java.util.*;
+import java.util.stream.Stream;
+
+/**
+ * Utility interface for generating sets of Candidates and Voters.
+ * It provides static methods for generating these sets with varying sizes, and with various attributes.
+ */
+public interface DataGenerator {
+
+    /**
+     * Generates a Set of Voters with a random number for each Electoral District
+     * The number of voters per district is defined within the range of minVoters and maxVoters.
+     *
+     * @param minVoters Minimum number of voters per district.
+     * @param maxVoters Maximum number of voters per district.
+     * @return a Set&lt;Voter&gt; of newly created Voter objects.
+     * @throws IllegalArgumentException if minVoters is greater than or equal to maxVoters.
+     */
+    static Set&lt;Voter&gt; generateVoters(int minVoters, int maxVoters) {
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if(minVoters &gt;= maxVoters){</span>
+<span class="fc" id="L29">            throw new IllegalArgumentException(&quot;Min voters cannot be greater than max voters&quot;);</span>
+        }
+
+<span class="fc" id="L32">        var id = 1L;</span>
+<span class="fc" id="L33">        var voters = new HashSet&lt;Voter&gt;();</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for(var district : ElectoralDistrict.values()){</span>
+
+<span class="fc" id="L37">            var randomAmountOfVoter = generateRandomNumber(minVoters, maxVoters);</span>
+
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            for(int i = 0; i &lt; randomAmountOfVoter; i++){</span>
+<span class="fc" id="L40">                voters.add(Voter.of(</span>
+                        id, district,
+                        CandidateComparators.compareByNameThenSurnameThenElectoralDistrict));
+<span class="fc" id="L43">                id++;</span>
+            }
+        }
+<span class="fc" id="L46">        return voters;</span>
+    }
+
+    /**
+     * Generates a Set of Candidates with a random number for each Electoral District
+     * The number of candidates per district is defined within the range of minCandidates and maxCandidates.
+     * Each candidate is given a random name and surname from a predefined list of names and surnames.
+     *
+     * @param minCandidates Minimum number of candidates per district.
+     * @param maxCandidates Maximum number of candidates per district.
+     * @return a Set&lt;Candidate&gt; of newly created Candidate objects.
+     * @throws IllegalArgumentException if minCandidates is greater than or equal to maxCandidates.
+     */
+    static Set&lt;Candidate&gt; generateCandidates(int minCandidates, int maxCandidates) {
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if(minCandidates &gt;= maxCandidates){</span>
+<span class="fc" id="L62">            throw new IllegalArgumentException(&quot;Min candidates cannot be greater than max candidates&quot;);</span>
+        }
+
+<span class="fc" id="L65">        var candidates = new HashSet&lt;Candidate&gt;();</span>
+<span class="fc" id="L66">        var id = 1L;</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for(var district : ElectoralDistrict.values()){</span>
+
+<span class="fc" id="L70">            var randomAmountOfCandidates = generateRandomNumber(minCandidates, maxCandidates);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            for(int i = 0; i &lt; randomAmountOfCandidates; i++) {</span>
+<span class="fc" id="L72">                candidates.add(Candidate</span>
+<span class="fc" id="L73">                        .builder()</span>
+<span class="fc" id="L74">                        .id(id)</span>
+<span class="fc" id="L75">                        .name(generateName())</span>
+<span class="fc" id="L76">                        .surname(generatePolishSurname())</span>
+<span class="fc" id="L77">                        .electoralDistrict(district)</span>
+<span class="fc" id="L78">                        .build());</span>
+<span class="fc" id="L79">                id++;</span>
+            }
+        }
+<span class="fc" id="L82">        return candidates;</span>
+
+    }
+
+    /**
+     * Generates a random number between the specified min and max values.
+     *
+     * @param min The minimum value (inclusive)
+     * @param max The maximum value (exclusive)
+     * @return a random int value between min (inclusive) and max (exclusive).
+     */
+    private static int generateRandomNumber(int min, int max){
+<span class="fc" id="L94">        return Stream</span>
+<span class="fc" id="L95">                .generate(() -&gt; new Random()</span>
+<span class="fc" id="L96">                        .nextInt(min, max))</span>
+<span class="fc" id="L97">                .limit(1)</span>
+<span class="fc" id="L98">                .findFirst().orElse(5);</span>
+    }
+
+    /**
+     * Generates a random Polish name from an array of predefined names.
+     *
+     * @return a String representing a random Polish name.
+     */
+    private static String generateName() {
+<span class="fc" id="L107">        String[] names = {</span>
+                &quot;Adam&quot;, &quot;Andrzej&quot;, &quot;Bartosz&quot;, &quot;Dawid&quot;, &quot;Dominik&quot;,
+                &quot;Grzegorz&quot;, &quot;Jakub&quot;, &quot;Jan&quot;, &quot;Jerzy&quot;, &quot;Karol&quot;,
+                &quot;Krzysztof&quot;, &quot;Łukasz&quot;, &quot;Maciej&quot;, &quot;Marek&quot;, &quot;Marcin&quot;,
+                &quot;Michał&quot;, &quot;Paweł&quot;, &quot;Piotr&quot;, &quot;Rafał&quot;, &quot;Robert&quot;,
+                &quot;Sebastian&quot;, &quot;Szymon&quot;, &quot;Tomasz&quot;, &quot;Wojciech&quot;, &quot;Zbigniew&quot;,
+                &quot;Agnieszka&quot;, &quot;Alicja&quot;, &quot;Anna&quot;, &quot;Barbara&quot;, &quot;Beata&quot;,
+                &quot;Ewa&quot;, &quot;Grażyna&quot;, &quot;Helena&quot;, &quot;Izabela&quot;, &quot;Jadwiga&quot;,
+                &quot;Joanna&quot;, &quot;Katarzyna&quot;, &quot;Kinga&quot;, &quot;Krystyna&quot;, &quot;Małgorzata&quot;,
+                &quot;Maria&quot;, &quot;Marta&quot;, &quot;Monika&quot;, &quot;Natalia&quot;, &quot;Olga&quot;,
+                &quot;Patrycja&quot;, &quot;Paulina&quot;, &quot;Renata&quot;, &quot;Sylwia&quot;, &quot;Zofia&quot;};
+<span class="fc" id="L118">        return names[generateRandomNumber(0, names.length)];</span>
+    }
+
+    /**
+     * Generates a random Polish surname from an array of predefined surnames.
+     *
+     * @return a String representing a random Polish surname.
+     */
+    private static String generatePolishSurname() {
+
+<span class="fc" id="L128">        String[] surnames = {</span>
+                &quot;Kowalski&quot;, &quot;Nowak&quot;, &quot;Wiśniewski&quot;, &quot;Wójcik&quot;, &quot;Kowalczyk&quot;,
+                &quot;Kamiński&quot;, &quot;Lewandowski&quot;, &quot;Zieliński&quot;, &quot;Szymański&quot;, &quot;Woźniak&quot;,
+                &quot;Dąbrowski&quot;, &quot;Kozłowski&quot;, &quot;Jankowski&quot;, &quot;Mazur&quot;, &quot;Wojciechowski&quot;,
+                &quot;Kwiatkowski&quot;, &quot;Krawczyk&quot;, &quot;Kaczmarek&quot;, &quot;Piotrowski&quot;, &quot;Grabowski&quot;,
+                &quot;Pawłowski&quot;, &quot;Michalski&quot;, &quot;Zając&quot;, &quot;Król&quot;, &quot;Wieczorek&quot;, &quot;Jabłoński&quot;,
+                &quot;Wróbel&quot;, &quot;Nowicki&quot;, &quot;Majewski&quot;, &quot;Olszewski&quot;, &quot;Stępień&quot;, &quot;Malinowski&quot;,
+                &quot;Jaworski&quot;, &quot;Adamczyk&quot;, &quot;Dudek&quot;, &quot;Pawlak&quot;, &quot;Górski&quot;, &quot;Nowiński&quot;,
+                &quot;Sikora&quot;, &quot;Walczak&quot;, &quot;Baran&quot;, &quot;Laskowski&quot;, &quot;Urbaniak&quot;, &quot;Szczepański&quot;,
+                &quot;Kucharski&quot;, &quot;Wilk&quot;, &quot;Lis&quot;, &quot;Mazurek&quot;, &quot;Wasilewski&quot;};
+
+<span class="fc" id="L139">        return surnames[generateRandomNumber(0, surnames.length)];</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

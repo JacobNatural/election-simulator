@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.app"},{"l":"com.app.candidate"},{"l":"com.app.data_generators"},{"l":"com.app.elections"},{"l":"com.app.electoral_district"},{"l":"com.app.voter"}];updateSearchResults();
