@@ -27,4 +27,5 @@ public class DataGeneratorGenerateCandidatesTest {
                         ElectoralDistrict.values().length * 5,
                         ElectoralDistrict.values().length * 10);
     }
+
 }

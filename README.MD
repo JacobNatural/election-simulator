@@ -1,7 +1,7 @@
-# ELECTION SIMULATOR
+# Election Simulator
 ![Static Badge](https://img.shields.io/badge/Build-passing-flat)
-[![Static Badge](https://img.shields.io/badge/Coverage-100%25-flat)](https://jacobnatural.github.io/election_simulator/jacoco/index.html)
-[![Static Badge](https://img.shields.io/badge/docs-blue)](https://jacobnatural.github.io/election_simulator/apidocs/index.html)
+[![Static Badge](https://img.shields.io/badge/Coverage-100%25-flat)](https://jacobnatural.github.io/election-simulator/jacoco/index.html)
+[![Static Badge](https://img.shields.io/badge/docs-blue)](https://jacobnatural.github.io/election-simulator/apidocs/index.html)
 ## Overview
 
 Description: The Election Simulator is a software application designed to simulate election processes. 
@@ -13,32 +13,51 @@ All components of the application are thoroughly tested using JUnit.
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 22
-- A Java IDE or text editor (e.g., IntelliJ IDEA, Eclipse, VSCode)
+- **Java Development Kit (JDK) 22+**
+- **Apache Maven 3.9.6+**
 
 
 ### Cloning the repository:
+- To clone the repository and navigate into the project directory, run:
 
-```Bash
-git clone https://github.com/JacobNatural/election_simulator.git
-cd election_simulator
-```
-### Building the project using Maven:
-
-
-```Bash
-mvn clean install
+```bash
+git clone https://github.com/JacobNatural/election-simulator.git
+cd election-simulator
 ```
 ### Running the application:
-```Bash
+- To build the application and run it:
+- You can customize the simulation by passing parameters for the number of candidates and voters. Here are the options:
+
+`--cMin<number>`: Set the minimum number of candidates per electoral district.  
+`--cMax=<number>`: Set the maximum number of candidates per electoral district.  
+`--vMin=<number>`: Set the minimum number of candidates per electoral district.  
+`--vMax=<number>`: Set the maximum number of candidates per electoral district.
+```bash
+mvn clean package -DskipTests
 cd target  
-java java --enable-preview -jar electionsimulator-1.0.jar
+java --enable-preview -jar election-simulator-1.0.jar --cMin=5 --cMax=10 --vMin=50 --vMax=100
+```
+### Running Tests
+- To execute the tests, use the following command:
+```bash
+mvn clean test
 ```
 
 ### Integrate into Your Project
+- If you want to use this application as a dependency in another Maven project,
+  first install it into your local Maven repository by running:
+```bash
+mvn clean install -DskipTests
+```
+- Then, you can add the following dependency to your pom.xml file:
 
-1. Import the necessary packages into your Java project.
-2. Utilize the provided classes and methods to manage the election simulator.
+```xml
+<dependency>
+    <groupId>com.app</groupId>
+    <artifactId>election-simulator</artifactId>
+    <version>1.0</version>
+</dependency>
+```
 
 ## Contributing
 

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.app</groupId>
-    <artifactId>ElectionSimulator</artifactId>
+    <artifactId>election-simulator</artifactId>
     <version>${revision}</version>
 
     <properties>
@@ -24,6 +24,7 @@
         <mockito.junit.version>5.4.0</mockito.junit.version>
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <maven.jaococo.plugin.version>0.8.11</maven.jaococo.plugin.version>
+        <maven.javadoc.plugin.version>3.8.0</maven.javadoc.plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -239,6 +240,18 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven.javadoc.plugin.version}</version>
+                    <configuration>
+                        <sourcepath>src/main/java</sourcepath>
+                        <subpackages>com.app</subpackages>
+                        <additionalJOptions>
+                        <additionalJOption>--enable-preview</additionalJOption>
+                        </additionalJOptions>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -263,16 +276,10 @@
                 <artifactId>lombok-pg</artifactId>
                 <version>0.11.3</version>
             </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.8.0</version>
-                    <configuration>
-                    <sourcepath>src/main/java</sourcepath>
-                    <subpackages>com.app</subpackages>
-                    <additionalparam>-docletpath ${project.build.directory}/lombok.jar -doclet lombok.launch.AnnotationProcessorHider$AnnotationProcessor -classpath ${project.build.directory}/classes</additionalparam>
-                    </configuration>
-                </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
         </plugins>
         <resources>
             <resource>
