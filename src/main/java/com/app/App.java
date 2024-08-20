@@ -4,8 +4,9 @@ import com.app.candidate.CandidateComparators;
 import com.app.data_generators.DataGenerator;
 import com.app.elections.Elections;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Main application class that sets up and runs an election simulation.
@@ -23,36 +24,26 @@ public class App {
      */
     public static void main(String[] args) {
 
-        // Initialize a map to store configuration parameters for the election.
-        var params = new HashMap<String, Integer>();
 
         // Parse command-line arguments and populate the parameters map.
-        for(var arg : args){
-            if(arg.matches("(--cMin|--cMax|--vMin|--vMax)=\\d+")){
-                var splitArg = arg.split("=");
-                params.put(splitArg[0], Integer.parseInt(splitArg[1]));
-            }else {
-                System.out.println(STR."Invalid argument \{arg}, usign default value");
-            }
-
-        }
-
-        // Default number of candidates and voters for electoral district
-        var minCandidatesAmountPerDistrict = params.getOrDefault("--cMin", 5);
-        var maxCandidatesAmountPerDistrict = params.getOrDefault("--cMax", 10);
-        var minVotersAmountPerDistrict = params.getOrDefault("--vMin", 10);
-        var maxVotersAmountPerDistrict = params.getOrDefault("--vMax", 50);
-
+        var params = Arrays.stream(args)
+                .filter(arg -> arg.matches("(--cMin|--cMax|--vMin|--vMax)=\\d+"))
+                .map(arg -> arg.split("="))
+                .collect(Collectors.toMap(arg -> arg[0], arg -> Integer.parseInt(arg[1])));
 
 
         // Initialize a TreeSet of candidates, comparing candidates by name, surname and electoral district.
         var candidates = new TreeSet<>(CandidateComparators.compareByNameThenSurnameThenElectoralDistrict);
 
         // Populate the TreeSet with a generated set of candidates.
-        candidates.addAll(DataGenerator.generateCandidates(minCandidatesAmountPerDistrict, maxCandidatesAmountPerDistrict));
+        candidates.addAll(DataGenerator.generateCandidates(
+                params.getOrDefault("--cMin", 5),
+                params.getOrDefault("--cMax", 10)));
 
         // Generate a list of voters.
-        var voters = DataGenerator.generateVoters( minVotersAmountPerDistrict, maxVotersAmountPerDistrict);
+        var voters = DataGenerator.generateVoters(
+                params.getOrDefault("--vMin", 10),
+                params.getOrDefault("--vMax", 50));
 
         // Initialize an election with the generated candidates and voters.
         var elections = Elections.of(candidates, voters);
